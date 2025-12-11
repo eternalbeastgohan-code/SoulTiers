@@ -1,0 +1,704 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel - SOUL TIERS</title>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'JetBrains Mono', monospace;
+            background: linear-gradient(135deg, #0f1419 0%, #1a1a2e 50%, #16213e 100%);
+            color: #e2e8f0;
+            min-height: 100vh;
+        }
+
+        .header {
+            background: rgba(15, 20, 25, 0.95);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255, 215, 0, 0.1);
+            padding: 0 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .nav-container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            max-width: 1400px;
+            margin: 0 auto;
+            height: 70px;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #ffd700 0%, #ffb300 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: 1px;
+        }
+
+        .nav-links a {
+            color: #94a3b8;
+            text-decoration: none;
+            font-weight: 500;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            transition: 0.3s;
+        }
+
+        .nav-links a:hover {
+            color: #ffd700;
+            background: rgba(255, 215, 0, 0.05);
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 2rem auto;
+            padding: 2rem;
+        }
+
+        .panel-card {
+            background: rgba(15, 20, 25, 0.8);
+            border-radius: 16px;
+            border: 1px solid rgba(255, 215, 0, 0.2);
+            backdrop-filter: blur(20px);
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .panel-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #ffd700;
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            color: #94a3b8;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid rgba(255, 215, 0, 0.2);
+            border-radius: 8px;
+            background: rgba(30, 41, 59, 0.4);
+            color: #e2e8f0;
+            font-family: 'JetBrains Mono', monospace;
+            transition: 0.3s;
+        }
+
+        .form-group input:focus, .form-group select:focus {
+            outline: none;
+            border-color: rgba(255, 215, 0, 0.5);
+            background: rgba(30, 41, 59, 0.6);
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #ffd700 0%, #ffb300 100%);
+            color: #000;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.3s;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            background: linear-gradient(135deg, #ffed4e 0%, #ffc107 100%);
+        }
+
+        .player-preview {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem;
+            background: rgba(30, 41, 59, 0.4);
+            border-radius: 8px;
+            margin-top: 1rem;
+        }
+
+        .player-avatar {
+            width: 64px;
+            height: 64px;
+            border-radius: 8px;
+            border: 2px solid #ffd700;
+            image-rendering: pixelated;
+        }
+
+        .success-msg {
+            color: #51cf66;
+            text-align: center;
+            margin-top: 1rem;
+            font-weight: 600;
+        }
+
+        .players-list {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .player-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1rem;
+            background: rgba(30, 41, 59, 0.4);
+            border-radius: 8px;
+            margin-bottom: 0.5rem;
+        }
+
+        .player-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .delete-btn {
+            background: rgba(239, 68, 68, 0.2);
+            color: #ef4444;
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.8rem;
+        }
+
+        .delete-btn:hover {
+            background: rgba(239, 68, 68, 0.3);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .stat-item {
+            background: rgba(30, 41, 59, 0.4);
+            padding: 1.5rem;
+            border-radius: 8px;
+            text-align: center;
+            border: 1px solid rgba(255, 215, 0, 0.2);
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #ffd700;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            color: #94a3b8;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+        }
+
+        .actions-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+        }
+
+        .action-btn {
+            background: rgba(30, 41, 59, 0.4);
+            color: #e2e8f0;
+            border: 1px solid rgba(255, 215, 0, 0.2);
+            padding: 1rem;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: 0.3s;
+            font-family: 'JetBrains Mono', monospace;
+            font-weight: 600;
+        }
+
+        .action-btn:hover {
+            background: rgba(255, 215, 0, 0.1);
+            border-color: rgba(255, 215, 0, 0.4);
+        }
+
+        .step {
+            margin: 1.5rem 0;
+            padding: 1.5rem;
+            background: rgba(30, 41, 59, 0.4);
+            border-radius: 8px;
+            border: 1px solid rgba(255, 215, 0, 0.2);
+        }
+
+        .step h3 {
+            color: #ffd700;
+            margin-bottom: 1rem;
+            font-size: 1.1rem;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+        }
+
+        .modal.active {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background: rgba(15, 20, 25, 0.95);
+            border-radius: 16px;
+            padding: 2rem;
+            width: 90%;
+            max-width: 500px;
+            border: 1px solid rgba(255, 215, 0, 0.3);
+            backdrop-filter: blur(20px);
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            color: #64748b;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .modal-close:hover {
+            color: #ffd700;
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="nav-container">
+            <div class="logo">SOUL TIERS - ADMIN</div>
+            <nav class="nav-links">
+                <a href="index.html">← Back to Rankings</a>
+            </nav>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="panel-card">
+            <h2 class="panel-title">Add Player</h2>
+            <div class="step-container">
+                <div style="text-align: center;">
+                    <button class="btn" id="startBtn" onclick="startAddPlayer()">+ Add New Player</button>
+                </div>
+                <div id="successMsg" class="success-msg"></div>
+            </div>
+        </div>
+
+        <!-- Step Modals -->
+        <div class="modal" id="stepModal">
+            <div class="modal-content">
+                <button class="modal-close" onclick="closeModal()">&times;</button>
+                
+                <div id="step1" class="step" style="display: none;">
+                    <h3>Step 1: Player Name</h3>
+                    <div class="form-group">
+                        <input type="text" id="playerName" placeholder="Enter Minecraft username" required>
+                    </div>
+                    <div id="playerPreview"></div>
+                    <div style="text-align: center;">
+                        <button class="btn" onclick="nextStep(2)" id="step1Next" disabled>Next</button>
+                    </div>
+                </div>
+
+                <div id="step2" class="step" style="display: none;">
+                    <h3>Step 2: Region</h3>
+                    <div class="form-group">
+                        <select id="playerRegion" required>
+                            <option value="">Select Region</option>
+                            <option value="NA">North America</option>
+                            <option value="EU">Europe</option>
+                            <option value="AS">Asia</option>
+                            <option value="OC">Oceania</option>
+                        </select>
+                    </div>
+                    <div style="text-align: center;">
+                        <button class="btn" onclick="nextStep(3)" id="step2Next" disabled>Next</button>
+                    </div>
+                </div>
+
+                <div id="step3" class="step" style="display: none;">
+                    <h3>Step 3: Game Mode</h3>
+                    <div class="form-group">
+                        <select id="gameMode" required>
+                            <option value="">Select Mode</option>
+                            <option value="vanilla">Vanilla</option>
+                            <option value="uhc">UHC</option>
+                            <option value="pot">Pot</option>
+                            <option value="nethpot">Nethpot</option>
+                            <option value="smp">SMP</option>
+                            <option value="sword">Sword</option>
+                            <option value="axe">Axe</option>
+                            <option value="mace">Mace</option>
+                        </select>
+                    </div>
+                    <div style="text-align: center;">
+                        <button class="btn" onclick="nextStep(4)" id="step3Next" disabled>Next</button>
+                    </div>
+                </div>
+
+                <div id="step4" class="step" style="display: none;">
+                    <h3>Step 4: Tier</h3>
+                    <div class="form-group">
+                        <select id="playerTier" required>
+                            <option value="">Select Tier</option>
+                            <option value="1">LT1 (Low Tier 1)</option>
+                            <option value="2">LT2 (Low Tier 2)</option>
+                            <option value="3">LT3 (Low Tier 3)</option>
+                            <option value="4">LT4 (Low Tier 4)</option>
+                            <option value="5">LT5 (Low Tier 5)</option>
+                            <option value="HT1">High Tier 1</option>
+                            <option value="HT2">High Tier 2</option>
+                            <option value="HT3">High Tier 3</option>
+                            <option value="HT4">High Tier 4</option>
+                            <option value="HT5">High Tier 5</option>
+                        </select>
+                    </div>
+                    <div style="text-align: center;">
+                        <button class="btn" onclick="addPlayer()">Add Player</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="panel-card">
+            <h2 class="panel-title">Dashboard</h2>
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-number" id="totalPlayers">0</div>
+                    <div class="stat-label">Total Players</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number" id="highTierPlayers">0</div>
+                    <div class="stat-label">High Tier Players</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number" id="totalTiers">0</div>
+                    <div class="stat-label">Total Tiers</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="panel-card">
+            <h2 class="panel-title">Quick Actions</h2>
+            <div class="actions-grid">
+                <button class="action-btn" onclick="exportData()">📊 Export Data</button>
+                <button class="action-btn" onclick="clearAllData()">🗑️ Clear All</button>
+                <button class="action-btn" onclick="generateReport()">📋 Generate Report</button>
+            </div>
+        </div>
+
+        <div class="panel-card">
+            <h2 class="panel-title">Recent Players (Last 3)</h2>
+            <div class="players-list" id="playersList"></div>
+        </div>
+    </div>
+
+    <script>
+        let players = JSON.parse(localStorage.getItem('soulTiersPlayers')) || [];
+
+        document.addEventListener('DOMContentLoaded', function() {
+            checkAdminAuth();
+            updateDashboard();
+            renderPlayersList();
+        });
+
+        function updateDashboard() {
+            const totalPlayers = players.length;
+            const highTierPlayers = players.filter(p => 
+                Object.values(p.tiers || {}).some(tier => 
+                    typeof tier === 'string' && tier.startsWith('HT')
+                )
+            ).length;
+            const totalTiers = players.reduce((sum, p) => 
+                sum + Object.keys(p.tiers || {}).length, 0
+            );
+
+            document.getElementById('totalPlayers').textContent = totalPlayers;
+            document.getElementById('highTierPlayers').textContent = highTierPlayers;
+            document.getElementById('totalTiers').textContent = totalTiers;
+        }
+
+        function exportData() {
+            const data = JSON.stringify(players, null, 2);
+            const blob = new Blob([data], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'soul-tiers-data.json';
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+
+        function clearAllData() {
+            if (confirm('Are you sure you want to delete ALL player data? This cannot be undone!')) {
+                if (confirm('This will permanently delete all ' + players.length + ' players. Continue?')) {
+                    players = [];
+                    localStorage.setItem('soulTiersPlayers', JSON.stringify(players));
+                    updateDashboard();
+                    renderPlayersList();
+                    alert('All data cleared successfully!');
+                }
+            }
+        }
+
+        function generateReport() {
+            const report = {
+                timestamp: new Date().toISOString(),
+                totalPlayers: players.length,
+                highTierPlayers: players.filter(p => 
+                    Object.values(p.tiers || {}).some(tier => 
+                        typeof tier === 'string' && tier.startsWith('HT')
+                    )
+                ).length,
+                playersByRegion: {
+                    NA: players.filter(p => p.region === 'NA').length,
+                    EU: players.filter(p => p.region === 'EU').length,
+                    AS: players.filter(p => p.region === 'AS').length,
+                    OC: players.filter(p => p.region === 'OC').length
+                },
+                tierDistribution: {
+                    LT: players.filter(p => 
+                        Object.values(p.tiers || {}).some(tier => 
+                            typeof tier === 'number' || (typeof tier === 'string' && !tier.startsWith('HT'))
+                        )
+                    ).length,
+                    HT: players.filter(p => 
+                        Object.values(p.tiers || {}).some(tier => 
+                            typeof tier === 'string' && tier.startsWith('HT')
+                        )
+                    ).length
+                }
+            };
+            
+            const reportText = `SOUL TIERS REPORT\n` +
+                `Generated: ${new Date().toLocaleString()}\n\n` +
+                `📊 STATISTICS:\n` +
+                `Total Players: ${report.totalPlayers}\n` +
+                `High Tier Players: ${report.highTierPlayers}\n\n` +
+                `🌍 BY REGION:\n` +
+                `NA: ${report.playersByRegion.NA}\n` +
+                `EU: ${report.playersByRegion.EU}\n` +
+                `AS: ${report.playersByRegion.AS}\n` +
+                `OC: ${report.playersByRegion.OC}\n\n` +
+                `🏆 TIER DISTRIBUTION:\n` +
+                `Low Tier: ${report.tierDistribution.LT}\n` +
+                `High Tier: ${report.tierDistribution.HT}`;
+            
+            const blob = new Blob([reportText], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'soul-tiers-report.txt';
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+
+        function checkAdminAuth() {
+            const adminSession = localStorage.getItem('adminSession');
+            if (!adminSession) {
+                window.location.href = 'admin.html';
+                return;
+            }
+            
+            // Check if admin session is expired (2 hours)
+            const session = JSON.parse(adminSession);
+            const loginTime = new Date(session.loginTime);
+            const now = new Date();
+            const hoursDiff = (now - loginTime) / (1000 * 60 * 60);
+            
+            if (hoursDiff > 2) {
+                localStorage.removeItem('adminSession');
+                window.location.href = 'admin.html';
+            }
+        }
+
+        let currentStep = 0;
+
+        function startAddPlayer() {
+            document.getElementById('stepModal').classList.add('active');
+            showStep(1);
+        }
+
+        function showStep(step) {
+            // Hide all steps
+            document.querySelectorAll('.step').forEach(s => s.style.display = 'none');
+            // Show current step
+            document.getElementById(`step${step}`).style.display = 'block';
+            currentStep = step;
+        }
+
+        function closeModal() {
+            document.getElementById('stepModal').classList.remove('active');
+            resetForm();
+        }
+
+        function nextStep(step) {
+            showStep(step);
+        }
+
+        function resetForm() {
+            document.querySelectorAll('.step').forEach(s => s.style.display = 'none');
+            document.getElementById('playerName').value = '';
+            document.getElementById('playerRegion').value = '';
+            document.getElementById('gameMode').value = '';
+            document.getElementById('playerTier').value = '';
+            document.getElementById('playerPreview').innerHTML = '';
+            document.getElementById('step1Next').disabled = true;
+            document.getElementById('step2Next').disabled = true;
+            document.getElementById('step3Next').disabled = true;
+            currentStep = 0;
+        }
+
+        document.getElementById('playerName').addEventListener('input', function() {
+            const name = this.value.trim();
+            const nextBtn = document.getElementById('step1Next');
+            if (name) {
+                showPlayerPreview(name);
+                nextBtn.disabled = false;
+            } else {
+                document.getElementById('playerPreview').innerHTML = '';
+                nextBtn.disabled = true;
+            }
+        });
+
+        document.getElementById('playerRegion').addEventListener('change', function() {
+            document.getElementById('step2Next').disabled = !this.value;
+        });
+
+        document.getElementById('gameMode').addEventListener('change', function() {
+            document.getElementById('step3Next').disabled = !this.value;
+        });
+
+        function showPlayerPreview(name) {
+            const avatarUrl = `https://mc-heads.net/avatar/${name}/64`;
+            document.getElementById('playerPreview').innerHTML = `
+                <div class="player-preview">
+                    <img src="${avatarUrl}" alt="${name}" class="player-avatar" onerror="this.src='https://mc-heads.net/avatar/steve/64'">
+                    <div>
+                        <div style="font-weight: 600; color: #ffd700;">${name}</div>
+                        <div style="font-size: 0.8rem; color: #94a3b8;">Preview</div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function addPlayer() {
+            const name = document.getElementById('playerName').value.trim();
+            const region = document.getElementById('playerRegion').value;
+            const gameMode = document.getElementById('gameMode').value;
+            const tier = document.getElementById('playerTier').value;
+
+            if (!name || !region || !gameMode || !tier) {
+                return;
+            }
+
+            // Check if player exists
+            let existingPlayer = players.find(p => p.name.toLowerCase() === name.toLowerCase());
+            
+            if (existingPlayer) {
+                // Update existing player's tier for this game mode
+                if (!existingPlayer.tiers) existingPlayer.tiers = {};
+                existingPlayer.tiers[gameMode] = tier;
+            } else {
+                // Add new player
+                const newPlayer = {
+                    _id: 'player_' + Date.now(),
+                    name: name,
+                    region: region,
+                    avatar: `https://mc-heads.net/avatar/${name}/64`,
+                    tiers: {
+                        [gameMode]: tier
+                    }
+                };
+                players.push(newPlayer);
+            }
+
+            // Save to localStorage
+            localStorage.setItem('soulTiersPlayers', JSON.stringify(players));
+
+            // Show success message
+            document.getElementById('successMsg').textContent = `Player ${name} added successfully!`;
+            closeModal();
+            setTimeout(() => document.getElementById('successMsg').textContent = '', 3000);
+
+            // Refresh dashboard and players list
+            updateDashboard();
+            renderPlayersList();
+        }
+
+        function renderPlayersList() {
+            const container = document.getElementById('playersList');
+            
+            if (players.length === 0) {
+                container.innerHTML = '<div style="text-align: center; color: #64748b; padding: 2rem;">No players added yet</div>';
+                return;
+            }
+
+            const recentPlayers = players.slice(-3).reverse();
+            container.innerHTML = recentPlayers.map(player => `
+                <div class="player-item">
+                    <div class="player-info">
+                        <img src="${player.avatar}" alt="${player.name}" class="player-avatar" style="width: 40px; height: 40px;" onerror="this.src='https://mc-heads.net/avatar/steve/40'">
+                        <div>
+                            <div style="font-weight: 600; color: #ffd700;">${player.name}</div>
+                            <div style="font-size: 0.8rem; color: #94a3b8;">${player.region} • ${Object.keys(player.tiers || {}).length} tiers</div>
+                        </div>
+                    </div>
+                    <button class="delete-btn" onclick="deletePlayer('${player._id}')">Delete</button>
+                </div>
+            `).join('');
+        }
+
+        function deletePlayer(playerId) {
+            if (confirm('Are you sure you want to delete this player?')) {
+                players = players.filter(p => p._id !== playerId);
+                localStorage.setItem('soulTiersPlayers', JSON.stringify(players));
+                renderPlayersList();
+            }
+        }
+    </script>
+</body>
+</html>

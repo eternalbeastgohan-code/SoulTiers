@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile - SOUL TIERS</title>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'JetBrains Mono', monospace;
+            background: linear-gradient(135deg, #0f1419 0%, #1a1a2e 50%, #16213e 100%);
+            color: #e2e8f0;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .background-effects {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+            background: 
+                radial-gradient(circle at 20% 30%, rgba(255, 215, 0, 0.05) 0%, transparent 50%),
+                radial-gradient(circle at 80% 70%, rgba(255, 193, 7, 0.03) 0%, transparent 50%);
+            animation: bgFloat 12s ease-in-out infinite;
+        }
+
+        @keyframes bgFloat {
+            0%, 100% { transform: scale(1) rotate(0deg); opacity: 0.6; }
+            50% { transform: scale(1.1) rotate(180deg); opacity: 0.8; }
+        }
+
+        .header {
+            background: rgba(15, 20, 25, 0.95);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255, 215, 0, 0.1);
+            padding: 0 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+
+        .nav-container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            max-width: 1400px;
+            margin: 0 auto;
+            height: 70px;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #ffd700 0%, #ffb300 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 20px rgba(255, 215, 0, 0.3);
+            letter-spacing: 1px;
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: #94a3b8;
+            text-decoration: none;
+            font-weight: 500;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .nav-link::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 215, 0, 0.1), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .nav-link:hover::before {
+            left: 100%;
+        }
+
+        .nav-link:hover {
+            color: #ffd700;
+            background: rgba(255, 215, 0, 0.05);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 16px rgba(255, 215, 0, 0.2);
+        }
+
+        .nav-icon {
+            width: 20px;
+            height: 20px;
+            filter: brightness(0.7);
+            transition: filter 0.3s ease;
+        }
+
+        .nav-link:hover .nav-icon {
+            filter: brightness(1.2) saturate(1.5);
+        }
+
+        .profile-container {
+            max-width: 900px;
+            margin: 2rem auto;
+            padding: 1.5rem;
+        }
+
+        .back-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: #94a3b8;
+            text-decoration: none;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            transition: 0.3s;
+        }
+
+        .back-btn:hover {
+            color: #ffd700;
+        }
+
+        .profile-card {
+            background: rgba(15, 20, 25, 0.8);
+            border-radius: 16px;
+            border: 1px solid rgba(255, 215, 0, 0.2);
+            backdrop-filter: blur(20px);
+            padding: 2rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .profile-top {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+            margin-bottom: 2rem;
+            padding-bottom: 2rem;
+            border-bottom: 1px solid rgba(255, 215, 0, 0.1);
+        }
+
+        .profile-avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 12px;
+            border: 2px solid #ffd700;
+            image-rendering: pixelated;
+        }
+
+        .profile-info {
+            flex: 1;
+        }
+
+        .profile-username {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #ffd700;
+            margin-bottom: 0.3rem;
+        }
+
+        .profile-joined {
+            color: #94a3b8;
+            font-size: 0.85rem;
+        }
+
+        .logout-btn {
+            background: rgba(239, 68, 68, 0.2);
+            color: #ef4444;
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            padding: 0.6rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.3s;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85rem;
+        }
+
+        .logout-btn:hover {
+            background: rgba(239, 68, 68, 0.3);
+        }
+
+        .stats-row {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-box {
+            text-align: center;
+            padding: 1rem;
+            background: rgba(30, 41, 59, 0.4);
+            border-radius: 10px;
+        }
+
+        .stat-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #ffd700;
+        }
+
+        .stat-label {
+            color: #94a3b8;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            margin-top: 0.3rem;
+        }
+
+        .section-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #e2e8f0;
+            margin-bottom: 1rem;
+        }
+
+        .tiers-grid {
+            background: rgba(30, 41, 59, 0.4);
+            border-radius: 12px;
+            padding: 1.5rem;
+            border: 1px solid rgba(71, 85, 105, 0.3);
+        }
+
+        .tiers-icons {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+            gap: 1.5rem;
+            justify-items: center;
+        }
+
+        .tier-item {
+            text-align: center;
+        }
+
+        .tier-icon {
+            width: 40px;
+            height: 40px;
+            margin-bottom: 0.5rem;
+        }
+
+        .tier-badge {
+            background: linear-gradient(135deg, #ffd700, #ffb300);
+            color: #000;
+            padding: 0.3rem 0.8rem;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 0.8rem;
+        }
+
+        .tier-badge.high-tier {
+            background: linear-gradient(135deg, #ff6b35, #ff8f00);
+            color: #fff;
+        }
+
+        .no-tiers {
+            text-align: center;
+            color: #64748b;
+            font-style: italic;
+            padding: 2rem;
+        }
+
+        @media (max-width: 768px) {
+            .profile-top {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .stats-row {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="background-effects"></div>
+    
+    <header class="header">
+        <div class="nav-container">
+            <div class="logo">SOUL TIERS</div>
+            <nav class="nav-links">
+                <a href="index.html" class="nav-link">
+                    <img src="https://mctiers.com/nav_icons/rankings.svg" alt="Rankings" class="nav-icon">
+                    <span>Rankings</span>
+                </a>
+                <a href="https://discord.gg/ez2gYAftkH" class="nav-link" target="_blank">
+                    <img src="https://mctiers.com/nav_icons/discord.svg" alt="Discord" class="nav-icon">
+                    <span>Discord</span>
+                </a>
+            </nav>
+        </div>
+    </header>
+
+    <div class="profile-container">
+        <a href="index.html" class="back-btn">← Back to Rankings</a>
+
+        <div class="profile-card">
+            <div class="profile-top">
+                <img src="" alt="Profile" class="profile-avatar" id="profileAvatar">
+                <div class="profile-info">
+                    <h1 class="profile-username" id="profileUsername">Loading...</h1>
+                    <p class="profile-joined" id="profileJoined">Loading...</p>
+                </div>
+                <button class="logout-btn" onclick="logout()">Logout</button>
+            </div>
+
+            <div class="stats-row">
+                <div class="stat-box">
+                    <div class="stat-value" id="totalPoints">0</div>
+                    <div class="stat-label">Total Points</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-value" id="totalTiers">0</div>
+                    <div class="stat-label">Active Tiers</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-value" id="overallRank">-</div>
+                    <div class="stat-label">Overall Rank</div>
+                </div>
+            </div>
+
+            <h2 class="section-title">Tiers</h2>
+            <div class="tiers-grid">
+                <div class="tiers-icons" id="tiersGrid"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const gameModes = [
+            { id: 'vanilla', name: 'Vanilla', icon: 'vanilla.svg' },
+            { id: 'uhc', name: 'UHC', icon: 'uhc.svg' },
+            { id: 'pot', name: 'Pot', icon: 'pot.svg' },
+            { id: 'nethpot', name: 'Nethpot', icon: 'nethop.svg' },
+            { id: 'smp', name: 'SMP', icon: 'smp.svg' },
+            { id: 'sword', name: 'Sword', icon: 'sword.svg' },
+            { id: 'axe', name: 'Axe', icon: 'axe.svg' },
+            { id: 'mace', name: 'Mace', icon: 'mace.svg' }
+        ];
+
+        const TIER_POINTS = {
+            1: 100, 2: 75, 3: 50, 4: 25, 5: 10,
+            'HT1': 110, 'HT2': 85, 'HT3': 60, 'HT4': 35, 'HT5': 20
+        };
+
+        document.addEventListener('DOMContentLoaded', function() {
+            checkAuth();
+            loadProfile();
+        });
+
+        function checkAuth() {
+            const userData = localStorage.getItem('userData');
+            if (!userData) {
+                window.location.href = 'login.html';
+                return;
+            }
+            
+            try {
+                const user = JSON.parse(userData);
+                if (!user.loginTime) {
+                    // Old session without loginTime, keep it valid
+                    return;
+                }
+                
+                // Check if session is expired (24 hours)
+                const loginTime = new Date(user.loginTime);
+                const now = new Date();
+                const hoursDiff = (now - loginTime) / (1000 * 60 * 60);
+                
+                if (hoursDiff > 24) {
+                    localStorage.removeItem('userData');
+                    window.location.href = 'login.html';
+                }
+            } catch (error) {
+                // Invalid session data, redirect to login
+                localStorage.removeItem('userData');
+                window.location.href = 'login.html';
+            }
+        }
+
+        async function loadProfile() {
+            const userData = JSON.parse(localStorage.getItem('userData'));
+            
+            document.getElementById('profileUsername').textContent = userData.username;
+            document.getElementById('profileJoined').textContent = `Member since: ${new Date(userData.loginTime).toLocaleDateString()}`;
+            
+            const avatarUrl = `https://mc-heads.net/avatar/${userData.username}/120`;
+            document.getElementById('profileAvatar').src = avatarUrl;
+            document.getElementById('profileAvatar').onerror = function() {
+                this.src = 'https://mc-heads.net/avatar/steve/120';
+            };
+
+            // Try to fetch player data from localStorage first
+            try {
+                const localPlayers = localStorage.getItem('soulTiersPlayers');
+                if (localPlayers) {
+                    const players = JSON.parse(localPlayers);
+                    const playerData = players.find(p => p.name.toLowerCase() === userData.username.toLowerCase());
+                    
+                    if (playerData) {
+                        displayPlayerStats(playerData);
+                        return;
+                    }
+                }
+                
+                // Fallback to API
+                const response = await fetch(`/api/search?q=${encodeURIComponent(userData.username)}`);
+                if (response.ok) {
+                    const results = await response.json();
+                    const playerData = results.find(p => p.name.toLowerCase() === userData.username.toLowerCase());
+                    
+                    if (playerData) {
+                        displayPlayerStats(playerData);
+                        return;
+                    }
+                }
+            } catch (error) {
+                console.log('Could not fetch player data:', error);
+            }
+
+            displayMockData(userData);
+        }
+
+        function displayPlayerStats(player) {
+            let totalPoints = 0;
+            let activeTiers = 0;
+
+            Object.keys(player.tiers || {}).forEach(mode => {
+                const tier = player.tiers[mode];
+                if (tier && TIER_POINTS[tier]) {
+                    totalPoints += TIER_POINTS[tier];
+                    activeTiers++;
+                }
+            });
+
+            document.getElementById('totalPoints').textContent = totalPoints;
+            document.getElementById('totalTiers').textContent = activeTiers;
+            document.getElementById('overallRank').textContent = player.rank || '-';
+
+            const tiersGrid = document.getElementById('tiersGrid');
+            const playerTiers = gameModes.filter(mode => player.tiers?.[mode.id]);
+            
+            if (playerTiers.length === 0) {
+                tiersGrid.innerHTML = '<div class="no-tiers">No tiers assigned</div>';
+                return;
+            }
+
+            tiersGrid.innerHTML = playerTiers.map(mode => {
+                const tier = player.tiers[mode.id];
+                const isHighTier = typeof tier === 'string' && tier.startsWith('HT');
+                
+                return `
+                    <div class="tier-item">
+                        <img src="https://mctiers.com/tier_icons/${mode.icon}" alt="${mode.name}" class="tier-icon">
+                        <div class="tier-badge ${isHighTier ? 'high-tier' : ''}">${tier}</div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function displayMockData(userData) {
+            document.getElementById('totalPoints').textContent = '0';
+            document.getElementById('totalTiers').textContent = '0';
+            document.getElementById('overallRank').textContent = '-';
+            document.getElementById('tiersGrid').innerHTML = '<div class="no-tiers">No tiers assigned</div>';
+        }
+
+        function logout() {
+            if (confirm('Are you sure you want to logout?')) {
+                localStorage.removeItem('userData');
+                window.location.href = 'login.html';
+            }
+        }
+    </script>
+</body>
+</html>

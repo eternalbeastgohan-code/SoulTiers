@@ -812,10 +812,10 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0, 0, 0, 0.8);
-            backdrop-filter: blur(10px);
+            background: rgba(0, 0, 0, 0.95);
+            backdrop-filter: blur(25px);
             z-index: 1000;
-            animation: modalFadeIn 0.3s ease;
+            animation: modalFadeIn 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         .modal.active {
@@ -825,30 +825,60 @@
         }
 
         .modal-content {
-            background: linear-gradient(135deg, rgba(15, 20, 25, 0.95), rgba(26, 26, 46, 0.95));
-            border-radius: 20px;
-            padding: 2.5rem;
-            width: 90%;
-            max-width: 600px;
-            border: 1px solid rgba(255, 215, 0, 0.3);
-            backdrop-filter: blur(20px);
+            background: linear-gradient(145deg, rgba(15, 20, 25, 0.98), rgba(26, 26, 46, 0.98));
+            border-radius: 24px;
+            padding: 3rem;
+            width: 95%;
+            max-width: 650px;
+            border: 2px solid rgba(255, 215, 0, 0.4);
+            backdrop-filter: blur(30px);
             position: relative;
+            box-shadow: 
+                0 25px 50px rgba(0, 0, 0, 0.8),
+                0 0 0 1px rgba(255, 215, 0, 0.1),
+                inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            animation: modalSlideIn 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        @keyframes modalFadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes modalSlideIn {
+            from { 
+                opacity: 0;
+                transform: scale(0.9) translateY(20px);
+            }
+            to { 
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
         }
 
         .modal-close {
             position: absolute;
-            top: 1rem;
-            right: 1rem;
-            background: none;
-            border: none;
-            font-size: 1.8rem;
-            color: #64748b;
+            top: 1.5rem;
+            right: 1.5rem;
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            color: #ef4444;
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         .modal-close:hover {
-            color: #ffd700;
+            background: rgba(239, 68, 68, 0.2);
+            border-color: rgba(239, 68, 68, 0.5);
+            transform: scale(1.1);
+            box-shadow: 0 4px 16px rgba(239, 68, 68, 0.3);
         }
 
         .modal-tier-icon {
@@ -862,15 +892,15 @@
             background: linear-gradient(135deg, #ffd700, #ffb300);
             color: #000;
             padding: 0.3rem 0.8rem;
-            border-radius: 20px;
+            border-radius: 6px;
             font-weight: 700;
-            font-size: 0.9rem;
+            font-size: 0.75rem;
+            margin-top: 0.3rem;
         }
 
         .modal-tier-badge.high-tier {
             background: linear-gradient(135deg, #ff6b35, #ff8f00);
             color: #fff;
-            box-shadow: 0 0 12px rgba(255, 107, 53, 0.6);
         }
 
         @media (max-width: 1200px) {
@@ -910,7 +940,7 @@
     
     <header class="header">
         <div class="nav-container">
-            <div class="logo">QUARANTINE TIERS</div>
+            <div class="logo">SOUL TIERS</div>
             <nav class="nav-links">
                 <a href="#" class="nav-link">
                     <img src="https://mctiers.com/nav_icons/rankings.svg" alt="Rankings" class="nav-icon">
@@ -920,11 +950,18 @@
                     <img src="https://mctiers.com/nav_icons/discord.svg" alt="Discord" class="nav-icon">
                     <span>Discord</span>
                 </a>
+                <a href="profile.html" class="nav-link" id="profileLink" style="display: none;">
+                    <span style="font-size: 1.2rem;">👤</span>
+                    <span>Profile</span>
+                </a>
             </nav>
-            <div class="search-container">
-                <span class="search-icon">🔍</span>
-                <input type="text" class="search-input" placeholder="Search player..." id="playerSearch">
-                <div class="search-dropdown" id="searchDropdown"></div>
+            <div style="display: flex; align-items: center; gap: 1rem;">
+                <div class="search-container">
+                    <span class="search-icon">🔍</span>
+                    <input type="text" class="search-input" placeholder="Search player..." id="playerSearch">
+                    <div class="search-dropdown" id="searchDropdown"></div>
+                </div>
+                <a href="#" onclick="checkAdminAccess()" style="font-size: 1.5rem; text-decoration: none; opacity: 0.7; transition: 0.3s;" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.7'">⚙️</a>
             </div>
         </div>
     </header>
@@ -947,9 +984,9 @@
                 <img src="https://mctiers.com/tier_icons/pot.svg" alt="Pot" class="mode-icon">
                 <span class="mode-name">Pot</span>
             </div>
-            <div class="mode-tab" data-mode="nethop">
-                <img src="https://mctiers.com/tier_icons/nethop.svg" alt="NetHoP" class="mode-icon">
-                <span class="mode-name">NetHoP</span>
+            <div class="mode-tab" data-mode="nethpot">
+                <img src="https://mctiers.com/tier_icons/nethop.svg" alt="Nethpot" class="mode-icon">
+                <span class="mode-name">Nethpot</span>
             </div>
             <div class="mode-tab" data-mode="smp">
                 <img src="https://mctiers.com/tier_icons/smp.svg" alt="SMP" class="mode-icon">
@@ -1000,9 +1037,9 @@
             <div class="tier-columns" id="pot-tiers"></div>
         </div>
 
-        <div class="tiers-section" id="nethop-section">
-            <h2 class="section-title">NetHoP Rankings</h2>
-            <div class="tier-columns" id="nethop-tiers"></div>
+        <div class="tiers-section" id="nethpot-section">
+            <h2 class="section-title">Nethpot Rankings</h2>
+            <div class="tier-columns" id="nethpot-tiers"></div>
         </div>
 
         <div class="tiers-section" id="smp-section">
@@ -1050,8 +1087,21 @@
 
         // Initialize the app
         document.addEventListener('DOMContentLoaded', function() {
+            checkUserSession();
             init();
         });
+
+        // Check if user is logged in
+        function checkUserSession() {
+            const userData = localStorage.getItem('userData');
+            if (userData) {
+                const user = JSON.parse(userData);
+                const profileLink = document.getElementById('profileLink');
+                if (profileLink) {
+                    profileLink.style.display = 'flex';
+                }
+            }
+        }
 
         async function init() {
             setupEventListeners();
@@ -1208,6 +1258,17 @@
         async function loadPlayersData() {
             showLoading(true);
             try {
+                // Try to load from localStorage first
+                const localPlayers = localStorage.getItem('soulTiersPlayers');
+                if (localPlayers) {
+                    const rawData = JSON.parse(localPlayers);
+                    playersData = processPlayersData(rawData);
+                    filteredData = { ...playersData };
+                    showLoading(false);
+                    return;
+                }
+                
+                // Fallback to API if no local data
                 const response = await fetch('/api/players');
                 if (!response.ok) throw new Error('Failed to fetch players data');
                 
@@ -1217,7 +1278,19 @@
                 
             } catch (error) {
                 console.error('Error loading players:', error);
-                showError('Failed to load players data. Please try again later.');
+                // Load empty data structure if everything fails
+                playersData = {
+                    overall: [],
+                    vanilla: { 1: [], 2: [], 3: [], 4: [], 5: [] },
+                    uhc: { 1: [], 2: [], 3: [], 4: [], 5: [] },
+                    pot: { 1: [], 2: [], 3: [], 4: [], 5: [] },
+                    nethpot: { 1: [], 2: [], 3: [], 4: [], 5: [] },
+                    smp: { 1: [], 2: [], 3: [], 4: [], 5: [] },
+                    sword: { 1: [], 2: [], 3: [], 4: [], 5: [] },
+                    axe: { 1: [], 2: [], 3: [], 4: [], 5: [] },
+                    mace: { 1: [], 2: [], 3: [], 4: [], 5: [] }
+                };
+                filteredData = { ...playersData };
             } finally {
                 showLoading(false);
             }
@@ -1419,44 +1492,44 @@
             const overallRank = playersData.overall.findIndex(p => p._id === playerId) + 1;
             const htClass = player.isHighTier ? 'high-tier' : '';
             
+            // Get premium skin or steve
+            const skinUrl = `https://mc-heads.net/avatar/${player.name}/128`;
+            const fallbackSkin = 'https://mc-heads.net/avatar/steve/128';
+            
             modalContent.innerHTML = `
                 <div style="text-align: center; margin-bottom: 2rem;">
-                    <img src="${player.avatar || '/default-avatar.png'}" alt="${player.name}" 
-                         style="width: 80px; height: 80px; border-radius: 12px; border: 3px solid #ffd700; margin-bottom: 1rem;"
-                         onerror="this.src='/default-avatar.png'">
-                    <div style="font-size: 1.5rem; font-weight: 700; color: #ffd700; margin-bottom: 0.5rem;" class="${htClass}">${player.name}</div>
-                    <div style="color: #94a3b8; margin-bottom: 1rem;">Region: ${player.region}</div>
-                    <div style="font-size: 1.2rem; color: #e2e8f0;">
-                        <strong>Overall Rank: #${overallRank}</strong>
-                    </div>
-                    <div style="font-size: 1.1rem; color: #ffd700; margin-top: 0.5rem;">
-                        Total Points: ${player.totalPoints}
+                    <img src="${skinUrl}" alt="${player.name}" 
+                         style="width: 100px; height: 100px; border-radius: 12px; border: 3px solid #ffd700; margin-bottom: 1rem; image-rendering: pixelated;"
+                         onerror="this.src='${fallbackSkin}'">
+                    <div style="font-size: 1.8rem; font-weight: 700; color: #ffd700; margin-bottom: 0.5rem;" class="${htClass}">${player.name}</div>
+                    <div style="color: #94a3b8; font-size: 1rem; margin-bottom: 1.5rem;">${player.region}</div>
+                </div>
+                
+                <div style="font-size: 1.1rem; font-weight: 600; color: #e2e8f0; margin-bottom: 1rem;">Position</div>
+                <div style="background: rgba(30, 41, 59, 0.6); padding: 1.5rem; border-radius: 12px; margin-bottom: 1.5rem; border: 1px solid rgba(255, 215, 0, 0.3);">
+                    <div style="display: flex; align-items: center; gap: 0.8rem; font-size: 1.2rem; color: #ffd700; font-weight: 700;">
+                        <span>${overallRank}.</span>
+                        <span>🏆</span>
+                        <span>Overall</span>
+                        <span style="color: #94a3b8; font-size: 1rem;">(${player.totalPoints} Points)</span>
                     </div>
                 </div>
                 
                 ${player.playerTiers.length > 0 ? `
-                <div>
-                    <div style="font-size: 1.1rem; font-weight: 600; color: #e2e8f0; margin-bottom: 1rem; text-align: center;">
-                        Tier Standings
-                    </div>
-                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 1rem;">
+                <div style="font-size: 1.1rem; font-weight: 600; color: #e2e8f0; margin-bottom: 1rem;">Tiers</div>
+                <div style="background: rgba(30, 41, 59, 0.6); padding: 1.5rem; border-radius: 12px; border: 1px solid rgba(255, 215, 0, 0.3);">
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(100px, 1fr)); gap: 1rem; justify-items: center;">
                         ${player.playerTiers.map(tierInfo => {
                             const isHT = isHighTierValue(tierInfo.tier);
-                            const tierDisplay = tierInfo.tier;
-                            const htBadgeClass = isHT ? 'high-tier' : '';
                             const tierNumber = getTierNumber(tierInfo.tier);
+                            const tierDisplay = isHT ? `HT${tierNumber}` : `LT${tierNumber}`;
+                            const htBadgeClass = isHT ? 'high-tier' : '';
                             
                             return `
-                                <div style="background: rgba(30, 41, 59, 0.6); padding: 1rem; border-radius: 8px; text-align: center; border: 1px solid rgba(255, 215, 0, 0.3);">
+                                <div style="background: rgba(15, 20, 25, 0.8); border: 1px solid rgba(255, 215, 0, 0.3); border-radius: 8px; padding: 1rem; text-align: center; min-width: 80px;">
                                     <img src="https://mctiers.com/tier_icons/${tierInfo.mode}.svg" alt="${tierInfo.mode}" 
-                                         class="modal-tier-icon">
-                                    <div style="font-size: 0.8rem; color: #94a3b8; text-transform: uppercase; margin-bottom: 0.3rem;">
-                                        ${tierInfo.mode}
-                                    </div>
-                                    <div class="modal-tier-badge ${htBadgeClass}">${isHT ? `HT${tierNumber}` : `Tier ${tierNumber}`}</div>
-                                    <div style="font-size: 0.75rem; color: #64748b; margin-top: 0.3rem;">
-                                        ${TIER_POINTS[tierInfo.tier]} points
-                                    </div>
+                                         style="width: 32px; height: 32px; margin-bottom: 0.5rem;">
+                                    <div class="modal-tier-badge ${htBadgeClass}" style="font-size: 0.75rem; padding: 0.2rem 0.5rem;">${tierDisplay}</div>
                                 </div>
                             `;
                         }).join('')}
@@ -1484,6 +1557,15 @@
             const container = document.querySelector('.tiers-section.active .rankings-list, .tiers-section.active .tier-columns');
             if (container) {
                 container.innerHTML = `<div class="error-message">${message}</div>`;
+            }
+        }
+
+        function checkAdminAccess() {
+            const adminSession = localStorage.getItem('adminSession');
+            if (adminSession) {
+                window.location.href = 'admin-panel.html';
+            } else {
+                window.location.href = 'admin.html';
             }
         }
     </script>

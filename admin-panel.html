@@ -98,19 +98,39 @@
 
         .form-group input, .form-group select {
             width: 100%;
-            padding: 12px;
-            border: 2px solid rgba(255, 215, 0, 0.2);
-            border-radius: 8px;
-            background: rgba(30, 41, 59, 0.4);
+            padding: 14px 16px;
+            border: 2px solid rgba(255, 215, 0, 0.3);
+            border-radius: 12px;
+            background: rgba(15, 20, 25, 0.6);
             color: #e2e8f0;
             font-family: 'JetBrains Mono', monospace;
+            font-size: 0.95rem;
+            font-weight: 500;
             transition: 0.3s;
+            backdrop-filter: blur(10px);
         }
 
         .form-group input:focus, .form-group select:focus {
             outline: none;
-            border-color: rgba(255, 215, 0, 0.5);
-            background: rgba(30, 41, 59, 0.6);
+            border-color: #ffd700;
+            background: rgba(15, 20, 25, 0.8);
+            box-shadow: 0 0 20px rgba(255, 215, 0, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .form-group input::placeholder {
+            color: #64748b;
+            font-weight: 400;
+        }
+
+        .form-group select {
+            cursor: pointer;
+        }
+
+        .form-group select option {
+            background: #0f1419;
+            color: #e2e8f0;
+            padding: 12px;
         }
 
         .form-row {
@@ -248,17 +268,35 @@
         }
 
         .step {
-            margin: 1.5rem 0;
-            padding: 1.5rem;
-            background: rgba(30, 41, 59, 0.4);
-            border-radius: 8px;
-            border: 1px solid rgba(255, 215, 0, 0.2);
+            padding: 2rem;
         }
 
         .step h3 {
             color: #ffd700;
-            margin-bottom: 1rem;
-            font-size: 1.1rem;
+            margin-bottom: 1.5rem;
+            font-size: 1.3rem;
+            font-weight: 700;
+        }
+
+        .progress-bar {
+            display: flex;
+            gap: 0.5rem;
+            padding: 1.5rem 2rem;
+            background: rgba(0, 0, 0, 0.3);
+            border-bottom: 1px solid rgba(255, 215, 0, 0.1);
+        }
+
+        .progress-step {
+            flex: 1;
+            height: 4px;
+            background: rgba(255, 215, 0, 0.2);
+            border-radius: 2px;
+            transition: 0.3s;
+        }
+
+        .progress-step.active {
+            background: linear-gradient(90deg, #ffd700, #ffb300);
+            box-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
         }
 
         .modal {
@@ -280,29 +318,42 @@
         }
 
         .modal-content {
-            background: rgba(15, 20, 25, 0.95);
-            border-radius: 16px;
-            padding: 2rem;
-            width: 90%;
-            max-width: 500px;
-            border: 1px solid rgba(255, 215, 0, 0.3);
-            backdrop-filter: blur(20px);
+            background: linear-gradient(145deg, rgba(15, 20, 25, 0.98), rgba(26, 26, 46, 0.98));
+            border-radius: 24px;
+            padding: 0;
+            width: 95%;
+            max-width: 600px;
+            border: 2px solid rgba(255, 215, 0, 0.4);
+            backdrop-filter: blur(30px);
+            position: relative;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.8);
+            animation: modalSlideIn 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            overflow: hidden;
         }
 
         .modal-close {
             position: absolute;
             top: 1rem;
             right: 1rem;
-            background: none;
+            background: rgba(0, 0, 0, 0.4);
             border: none;
-            font-size: 1.5rem;
-            color: #64748b;
+            border-radius: 50%;
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.3rem;
+            color: #94a3b8;
             cursor: pointer;
-            transition: 0.3s;
+            transition: all 0.3s;
+            z-index: 10;
         }
 
         .modal-close:hover {
-            color: #ffd700;
+            background: rgba(239, 68, 68, 0.2);
+            color: #ef4444;
+            transform: rotate(90deg);
         }
     </style>
 </head>
@@ -331,73 +382,79 @@
         <div class="modal" id="stepModal">
             <div class="modal-content">
                 <button class="modal-close" onclick="closeModal()">&times;</button>
+                <div class="progress-bar">
+                    <div class="progress-step" id="progress1"></div>
+                    <div class="progress-step" id="progress2"></div>
+                    <div class="progress-step" id="progress3"></div>
+                    <div class="progress-step" id="progress4"></div>
+                </div>
                 
                 <div id="step1" class="step" style="display: none;">
-                    <h3>Step 1: Player Name</h3>
+                    <h3>🎮 Player Name</h3>
                     <div class="form-group">
                         <input type="text" id="playerName" placeholder="Enter Minecraft username" required>
                     </div>
                     <div id="playerPreview"></div>
-                    <div style="text-align: center;">
-                        <button class="btn" onclick="nextStep(2)" id="step1Next" disabled>Next</button>
+                    <div style="text-align: center; margin-top: 1.5rem;">
+                        <button class="btn" onclick="nextStep(2)" id="step1Next" disabled>Continue →</button>
                     </div>
                 </div>
 
                 <div id="step2" class="step" style="display: none;">
-                    <h3>Step 2: Region</h3>
+                    <h3>🌍 Select Region</h3>
                     <div class="form-group">
                         <select id="playerRegion" required>
-                            <option value="">Select Region</option>
-                            <option value="NA">North America</option>
-                            <option value="EU">Europe</option>
-                            <option value="AS">Asia</option>
-                            <option value="OC">Oceania</option>
+                            <option value="">Choose region...</option>
+                            <option value="NA">🇺🇸 North America</option>
+                            <option value="EU">🇪🇺 Europe</option>
+                            <option value="AS">🇯🇵 Asia</option>
+                            <option value="OC">🇦🇺 Oceania</option>
                         </select>
                     </div>
-                    <div style="text-align: center;">
-                        <button class="btn" onclick="nextStep(3)" id="step2Next" disabled>Next</button>
+                    <div style="text-align: center; margin-top: 1.5rem;">
+                        <button class="btn" onclick="nextStep(3)" id="step2Next" disabled>Continue →</button>
                     </div>
                 </div>
 
                 <div id="step3" class="step" style="display: none;">
-                    <h3>Step 3: Game Mode</h3>
+                    <h3>⚔️ Game Mode</h3>
                     <div class="form-group">
                         <select id="gameMode" required>
-                            <option value="">Select Mode</option>
-                            <option value="vanilla">Vanilla</option>
-                            <option value="uhc">UHC</option>
-                            <option value="pot">Pot</option>
-                            <option value="nethpot">Nethpot</option>
-                            <option value="smp">SMP</option>
-                            <option value="sword">Sword</option>
-                            <option value="axe">Axe</option>
-                            <option value="mace">Mace</option>
+                            <option value="">Choose mode...</option>
+                            <option value="vanilla">⚔️ Vanilla</option>
+                            <option value="uhc">💎 UHC</option>
+                            <option value="pot">🧪 Pot</option>
+                            <option value="nethpot">🔥 Nethpot</option>
+                            <option value="smp">🏔️ SMP</option>
+                            <option value="sword">🗡️ Sword</option>
+                            <option value="axe">🪓 Axe</option>
+                            <option value="mace">🔨 Mace</option>
                         </select>
                     </div>
-                    <div style="text-align: center;">
-                        <button class="btn" onclick="nextStep(4)" id="step3Next" disabled>Next</button>
+                    <div style="text-align: center; margin-top: 1.5rem;">
+                        <button class="btn" onclick="nextStep(4)" id="step3Next" disabled>Continue →</button>
                     </div>
                 </div>
 
                 <div id="step4" class="step" style="display: none;">
-                    <h3>Step 4: Tier</h3>
+                    <h3>🏆 Assign Tier</h3>
                     <div class="form-group">
                         <select id="playerTier" required>
-                            <option value="">Select Tier</option>
-                            <option value="1">LT1 (Low Tier 1)</option>
-                            <option value="2">LT2 (Low Tier 2)</option>
-                            <option value="3">LT3 (Low Tier 3)</option>
-                            <option value="4">LT4 (Low Tier 4)</option>
-                            <option value="5">LT5 (Low Tier 5)</option>
-                            <option value="HT1">High Tier 1</option>
-                            <option value="HT2">High Tier 2</option>
-                            <option value="HT3">High Tier 3</option>
-                            <option value="HT4">High Tier 4</option>
-                            <option value="HT5">High Tier 5</option>
+                            <option value="">Choose tier...</option>
+                            <option value="1">T1 (Tier 1)</option>
+                            <option value="2">T2 (Tier 2)</option>
+                            <option value="3">T3 (Tier 3)</option>
+                            <option value="4">T4 (Tier 4)</option>
+                            <option value="5">T5 (Tier 5)</option>
+                            <option value="HT1">🔥 HT1 (High Tier 1)</option>
+                            <option value="HT2">🔥 HT2 (High Tier 2)</option>
+                            <option value="HT3">🔥 HT3 (High Tier 3)</option>
+                            <option value="HT4">🔥 HT4 (High Tier 4)</option>
+                            <option value="HT5">🔥 HT5 (High Tier 5)</option>
                         </select>
                     </div>
-                    <div style="text-align: center;">
-                        <button class="btn" onclick="addPlayer()">Add Player</button>
+                    <div style="text-align: center; margin-top: 1.5rem;">
+                        <button class="btn" onclick="addPlayer()">✨ Add Player</button>
                     </div>
                 </div>
             </div>
@@ -431,7 +488,7 @@
         </div>
 
         <div class="panel-card">
-            <h2 class="panel-title">Recent Players (Last 3)</h2>
+            <h2 class="panel-title">All Players</h2>
             <div class="players-list" id="playersList"></div>
         </div>
     </div>
@@ -587,10 +644,19 @@
         }
 
         function showStep(step) {
-            // Hide all steps
             document.querySelectorAll('.step').forEach(s => s.style.display = 'none');
-            // Show current step
             document.getElementById(`step${step}`).style.display = 'block';
+            
+            // Update progress bar
+            for (let i = 1; i <= 4; i++) {
+                const progressEl = document.getElementById(`progress${i}`);
+                if (i <= step) {
+                    progressEl.classList.add('active');
+                } else {
+                    progressEl.classList.remove('active');
+                }
+            }
+            
             currentStep = step;
         }
 
@@ -701,8 +767,7 @@
                 return;
             }
 
-            const recentPlayers = players.slice(-3).reverse();
-            container.innerHTML = recentPlayers.map(player => `
+            container.innerHTML = players.map(player => `
                 <div class="player-item">
                     <div class="player-info">
                         <img src="${player.avatar}" alt="${player.name}" class="player-avatar" style="width: 40px; height: 40px;" onerror="this.src='https://mc-heads.net/avatar/steve/40'">
